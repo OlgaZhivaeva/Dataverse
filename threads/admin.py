@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Thread, Accrual
+from .models import Thread, Accrual, ThreadAuthorMaterial
+
+
+class ThreadAuthorMaterialInline(admin.TabularInline):
+    model = ThreadAuthorMaterial
+    extra = 1
+
+
+class ThreadAuthorMaterialAdmin(admin.ModelAdmin):
+    list_display = ('thread', 'author_contract', 'conducted_online')
 
 
 @admin.register(Thread)
@@ -9,20 +18,18 @@ class ThreadAdmin(admin.ModelAdmin):
         'department',
         'start_at',
         'end_at',
-        'online_form',
-        'full_time_form'
+        'conducted_online'
     )
     list_filter = (
         'department',
-        'online_form',
-        'full_time_form'
+        'conducted_online'
     )
     search_fields = (
         'article_number',
         'department'
     )
     date_hierarchy = 'start_at'
-    filter_horizontal = ('author_materials',)
+    inlines = [ThreadAuthorMaterialInline]
 
 
 @admin.register(Accrual)

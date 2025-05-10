@@ -41,19 +41,17 @@ class Thread(models.Model):
         null=True,
         blank=True
     )
-    online_form = models.BooleanField(
-        verbose_name="Онлайн форма",
+    conducted_online = models.BooleanField(
+        verbose_name="Проводится онлайн",
         default=False
     )
-    full_time_form = models.BooleanField(
-        verbose_name="Очная форма",
-        default=False
-    )
-    author_materials = models.ManyToManyField(
+
+    contracts_with_royalties = models.ManyToManyField(
         'contracts.AuthorContract',
-        verbose_name="Авторские материалы",
+        verbose_name="Контракты с авторскими отчислениями",
         related_name='author_materials',
         blank=True,
+        through='ThreadAuthorMaterial'
     )
     completed_at = models.DateTimeField(
         verbose_name="Дата завершения",
@@ -68,6 +66,27 @@ class Thread(models.Model):
 
     def __str__(self):
         return self.article_number
+
+
+class ThreadAuthorMaterial(models.Model):
+    thread = models.ForeignKey(
+        Thread,
+        verbose_name="Потоки по авторским контрактам",
+        on_delete=models.CASCADE,
+        related_name='author_contracts'
+    )
+    author_contract = models.ForeignKey(
+        'contracts.AuthorContract',
+        verbose_name="Авторские контракты по потокам",
+        on_delete=models.CASCADE,
+        related_name='threads'
+    )
+    class Meta:
+        verbose_name = "Связь потока и авторского материала"
+        verbose_name_plural = "Связи потоков и авторских материалов"
+
+    def __str__(self):
+        return f"Поток {self.thread.article_number} авторский контракт {self.author_contract.course_name}"
 
 
 class Accrual(models.Model):
