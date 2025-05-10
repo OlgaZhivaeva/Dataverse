@@ -38,7 +38,8 @@ class TeacherAdmin(admin.ModelAdmin):
     list_display = (
         'last_name',
         'first_name',
-        'middle_name'
+        'middle_name',
+        'get_courses'
     )
     search_fields = (
         'last_name',
@@ -49,3 +50,7 @@ class TeacherAdmin(admin.ModelAdmin):
         'last_name',
         'first_name'
     )
+
+    def get_courses(self, obj):
+        return ", ".join([course.course_name for course in obj.author_materials.all()])
+    get_courses.short_description = "Курсы"

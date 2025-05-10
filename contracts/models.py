@@ -40,6 +40,7 @@ class AuthorContract(BaseContract):
     counterparty = models.ForeignKey(
         Teacher,
         verbose_name="Автор курса",
+        related_name='author_materials',
         on_delete=models.RESTRICT
     )
     course_name = models.CharField(
